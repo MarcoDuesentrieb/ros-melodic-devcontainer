@@ -1,0 +1,62 @@
+{
+  "name": "ROS Melodic (amd64/arm64)",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "..",
+    "args": {
+      "USERNAME": "jetbot",
+      "USER_UID": "1000",
+      "USER_GID": "1000"
+    }
+  },
+  "remoteUser": "jetbot",
+  "workspaceFolder": "/home/jetbot/catkin_ws",
+
+  "runArgs": [
+    "--network=host",
+    "--read-only",
+    "--tmpfs", "/tmp:rw,exec,nosuid,nodev,size=1g",
+    "--tmpfs", "/run:rw,nosuid,nodev,size=64m",
+    "--tmpfs", "/var/tmp:rw,nosuid,nodev,size=256m",
+    "--tmpfs", "/home/jetbot:rw,exec,nosuid,nodev,size=1g,uid=1000,gid=1000",
+    "--gpus=all",
+    "-e", "DISPLAY=${env:DISPLAY}",
+    "-e", "XAUTHORITY=${env:XAUTHORITY}",
+    "-v", "${env:XAUTHORITY}:${env:XAUTHORITY}:ro",
+    "-v", "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+  ],
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-iot.vscode-ros",
+        "ms-vscode.cpptools",
+        "ms-python.python",
+        "twxs.cmake"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "python.defaultInterpreterPath": "/usr/bin/python",
+        "python.analysis.extraPaths": [
+          "/opt/ros/melodic/lib/python2.7/dist-packages",
+          "/home/jetbot/catkin_ws/src/jetbot_sim/src",
+          "/home/jetbot/catkin_ws/src/jetbot_control",
+          "/home/jetbot/catkin_ws/devel_isolated/jetbot_sim/lib/python2.7/dist-packages",
+          "/home/jetbot/catkin_ws/devel_isolated/jetbot_control/lib/python2.7/dist-packages"
+        ]
+      }    }
+  },
+
+  "postCreateCommand": "rosdep update || true",
+  "postStartCommand": "if [ ! -e \"$HOME/.bashrc\" ]; then cp /etc/skel/.bashrc \"$HOME/.bashrc\"; fi",
+
+  "containerEnv": {
+    "ROS_DISTRO": "melodic",
+    "ROS_MASTER_URI": "http://localhost:11311",
+    "NVIDIA_VISIBLE_DEVICES": "all",
+    "NVIDIA_DRIVER_CAPABILITIES": "graphics,display,utility",
+    "VSCODE_SERVER_CUSTOM_GLIBC_LINKER": "/opt/glibc-2.31/lib/ld-linux-custom.so",
+    "VSCODE_SERVER_CUSTOM_GLIBC_PATH": "/opt/glibc-2.31/lib/glibc",
+    "VSCODE_SERVER_PATCHELF_PATH": "/usr/bin/patchelf"
+  }
+}

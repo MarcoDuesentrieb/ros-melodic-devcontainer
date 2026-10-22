@@ -1,0 +1,13 @@
+<launch>
+  <!-- Parameter: Robot model file (urdf or xacro) -->
+  <arg name="model" default="$(find jetbot_description)/urdf/jetbot.urdf.xacro"/>
+
+  <!-- Convert Xacro → URDF and write to /jetbot_description -->
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)"/>
+
+   <!-- Robot-State-Publisher (send TFs, for RViz) -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"/>
+
+   <!-- Joint State Publisher for continuous joints (e.g., wheels) -->
+  <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" output="screen"/>
+</launch>

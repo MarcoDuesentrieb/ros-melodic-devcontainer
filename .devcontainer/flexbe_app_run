@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+package_share=/opt/ros/melodic/share/flexbe_app
+nw="$package_share/nwjs/nw"
+
+if [ ! -x "$nw" ]; then
+    echo "Cannot start FlexBE App: $nw is not executable." >&2
+    exit 1
+fi
+
+exec "$nw" --password-store=basic "$package_share" "$@"
